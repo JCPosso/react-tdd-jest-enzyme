@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React,{useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -10,6 +10,30 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   let history = useNavigate();
+  const [ token, setToken ] = useState('');
+  const [ email, setEmail ] = useState('');
+  const [ password, setPasword ] = useState('');
+  async function fetchToken() {
+    const response = await fetch("http://localhost:8080/v1/auth",{
+      credentials: 'include',
+      method: "POST",
+      body: JSON.stringify({
+        "email": email,
+        "password": password
+      }),
+      headers: {
+        "Content-type": "application/json"
+      }
+    }
+    )
+    .then(response => console.log(response.json)).catch(
+      console.log("something is wrong")
+  )
+    const authInfo = await response.json();
+    setToken(authInfo.token);
+    return authInfo.token;
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -18,9 +42,17 @@ export default function Login() {
         email: data.get('email'),
         password: data.get('password'),
       });
-    if (data.get('email')!=='' || data.get('password')!=='') {
-        redirect='/home';
-        history(redirect);
+    setEmail(data.get('email'));
+    setPasword(data.get('password'));
+    if (email && password) {
+        fetchToken()
+        .then(token =>
+          console.log(token)
+            //history('/home')
+          )
+        .catch(
+            console.log("Ups something is wrong, try again")
+        )
     } 
   };
 
