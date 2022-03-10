@@ -10,49 +10,34 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   let history = useNavigate();
-  const [ token, setToken ] = useState('');
-  const [ email, setEmail ] = useState('');
-  const [ password, setPasword ] = useState('');
-  async function fetchToken() {
-    const response = await fetch("http://localhost:8080/v1/auth",{
-      credentials: 'include',
+  async function fetchToken(data) {
+    const response = await fetch(window.$dir+"/v1/auth",{ 
       method: "POST",
       body: JSON.stringify({
-        "email": email,
-        "password": password
+        "email": data.get('email'),
+        "password" : data.get('password'),
       }),
       headers: {
         "Content-type": "application/json"
       }
     }
     )
-    .then(response => console.log(response.json)).catch(
-      console.log("something is wrong")
-  )
     const authInfo = await response.json();
-    setToken(authInfo.token);
-    return authInfo.token;
+    return authInfo;
   }
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    let redirect ='';
-    console.log({
-        email: data.get('email'),
-        password: data.get('password'),
-      });
-    setEmail(data.get('email'));
-    setPasword(data.get('password'));
-    if (email && password) {
-        fetchToken()
-        .then(token =>
-          console.log(token)
-            //history('/home')
-          )
-        .catch(
-            console.log("Ups something is wrong, try again")
-        )
+    if (data.get('email')!='') {
+        fetchToken(data)
+        .then(res =>{
+            console.log(res);
+            window.$token = res.token;
+            window.$expirationDate = res.expirationDate;
+            history('/tasks')
+            }
+      )
     } 
   };
 
