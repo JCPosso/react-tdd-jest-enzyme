@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
-import * as serviceWorker from './serviceWorkerRegistration';
+import * as serviceWorker from "./serviceWorkerRegistration";
 
 window.$token = "";
 window.$expirationDate = "";
@@ -14,4 +14,4 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById("root")
 );
-serviceWorker.register()
+serviceWorker.register();
