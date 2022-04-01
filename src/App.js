@@ -42,7 +42,7 @@ function App() {
       </FormGroup>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/tasks" element={<Tasks />} />
         </Routes>
       </BrowserRouter>
